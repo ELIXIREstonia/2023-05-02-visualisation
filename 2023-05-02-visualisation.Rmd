@@ -1,0 +1,709 @@
+---
+title: "Introduction to R and ggplot2"
+author: "Priit Adler"
+date: "2023-05-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction to R
+
+R is a popular open-source programming language and environment for statistical computing and graphics. In this section, we will cover basic R syntax, functions, data structures, and data manipulation using the tidyverse.
+
+### R Syntax and Basic Functions
+
+```{r}
+# Arithmetic operations
+2 + 3
+4 * 5
+6 / 2
+
+# Variables
+x <- 10
+y <- 20
+x + y
+
+# Functions
+mean(c(1, 2, 3, 4, 5))
+```
+
+### Data Structures in R
+
+R has several data structures for organizing and storing data. Understanding these data structures is essential for effective data manipulation and analysis.
+
+1.  **Vectors**: A one-dimensional array of elements, all of the same data type. Vectors are commonly used for performing arithmetic operations and storing sequences of values.
+
+```{r}
+v <- c(1, 2, 3, 4, 5)
+```
+
+2.  **Matrices**: A two-dimensional array of elements, organized in rows and columns, and all of the same data type. Matrices are useful for linear algebra operations and storing tabular data with a fixed number of rows and columns.
+
+```{r}
+m <- matrix(1:9, nrow = 3, ncol = 3)
+print(m)
+```
+
+3.  **Data frames**: A two-dimensional table where each column can have a different data type. Data frames are the most common data structure for storing and manipulating tabular data in R, especially for statistical analysis.
+
+```{r}
+df <- data.frame(
+  name = c("Alice", "Bob", "Charlie"),
+  age = c(25, 30, 35),
+  city = c("New York", "San Francisco", "Los Angeles")
+)
+print(df)
+```
+
+4.  **Lists**: A versatile data structure that can store elements of different data types and structures, including vectors, matrices, and other lists. Lists are useful for organizing and storing hierarchical or nested data.
+
+```{r}
+l <- list(
+  name = "Alice",
+  age = 25,
+  city = "New York"
+)
+print(l)
+```
+
+Each data structure has its strengths and applications, and choosing the right one depends on the specific needs of your data manipulation and analysis tasks.
+
+## Loading the Tidyverse and ggplot2
+
+```{r}
+# Install tidyverse and ggplot2 if not already installed
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse")
+}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+
+# Load the tidyverse and ggplot2
+library(tidyverse)
+library(ggplot2)
+```
+
+## Reading Data from a File
+
+R supports a wide variety of file formats for reading and writing data. Some common formats include:
+
+-   CSV (Comma-Separated Values)
+-   TSV (Tab-Separated Values)
+-   Excel (XLS, XLSX)
+-   JSON (JavaScript Object Notation)
+-   XML (eXtensible Markup Language)
+-   SQLite (a lightweight database format)
+
+The `tidyverse` packages, such as `readr` and `readxl`, provide functions for reading data from many of these formats. In this workshop, we'll focus on reading data from CSV, TSV, or Excel files.
+
+### Reading CSV Data
+
+```{r}
+# Read data from a CSV file
+data_csv <- read_csv("your_data_file.csv")
+
+# Display the first few rows of the data
+head(data_csv)
+```
+
+### Reading TSV Data
+
+Remove `#` from second and last row to run example
+
+```{r}
+# Read data from a TSV file
+# data_tsv <- read_tsv("your_data_file.tsv")
+
+# Display the first few rows of the data
+# head(data_tsv)
+```
+
+### Reading Excel Data
+
+```{r}
+# Install readxl package if not already installed
+if (!requireNamespace("readxl", quietly = TRUE)) {
+  install.packages("readxl")
+}
+
+# Load the readxl package
+library(readxl)
+```
+
+Remove `#` from second and last row to run example
+
+```{r}
+# Read data from an Excel file
+# data_excel <- read_excel("your_data_file.xlsx", sheet = "Sheet1")
+
+# Display the first few rows of the data
+# head(data_excel)
+```
+
+Replace `"your_data_file.csv"`, `"your_data_file.tsv"`, and `"your_data_file.xlsx"` with the appropriate file paths for your dataset. For the Excel file, also specify the correct sheet name using the `sheet` parameter in the `read_excel()` function.
+
+## High-Level Overview of the Data with Tidyverse Pipes
+
+Tidyverse pipes, represented by the `%>%` \<ctrl+shift+M\> symbol, allow you to chain together multiple functions in a clear and readable manner. Pipes take the output of one function and use it as the input for the next function, making it easy to follow the sequence of data transformations.
+
+In the following example, we'll use pipes to perform a series of operations on our dataset: 1. Group the data by a specific category (`group_by`) 2. Calculate summary statistics for each group (`summarize`) 3. Sort the resulting summary by a specific statistic (`arrange`)
+
+```{r include=FALSE}
+# Create a dummy dataset
+set.seed(42)
+data <- tibble(
+  YourCategory = factor(sample(LETTERS[1:5], 100, replace = TRUE)),
+  YourVariable = rnorm(100, mean = 50, sd = 10)
+)
+```
+
+```{r}
+# Summarize the data
+data_summary <- data %>% 
+  group_by(YourCategory) %>%
+  summarize(
+    mean_value = mean(YourVariable, na.rm = TRUE),
+    n = n()
+  ) %>%
+  arrange(desc(mean_value))
+
+head(data_summary)
+```
+
+In the above code, replace `YourCategory` and `YourVariable` with the appropriate column names from your dataset. This will give a high-level overview of the data, summarizing it by the specified category and calculating the mean of the specified variable. The use of pipes makes it easy to understand the sequence of transformations applied to the data.
+
+### Task:
+
+Use the cell below to repeat the steps we have done so far. Download data from [here](https://docs.google.com/spreadsheets/d/1_Tg-xQZeb4wgG6WxaDfcQH3G1-rMw7gAu8XJpJm0Cww/edit#gid=947183866) (if you haven't done so already). Read the data to R and try tidyverse `summarize`, `count`, etc. Find more options from [data-wrangling-cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+```{r}
+btd <- read_tsv('bechdel_test - bechdel_test.tsv')
+```
+
+# Plotting with ggplot2
+
+The ggplot2 package in R follows a modular paradigm based on the "Grammar of Graphics." This modular approach allows users to build complex plots by combining simple components or layers. Each layer represents a specific element of the plot, such as data, aesthetics, geoms, scales, and themes.
+
+1.  **Data**: This is the foundation of any plot. You specify the dataset you want to visualize.
+
+2.  **Aesthetics**: Aesthetics are the visual properties of the plot, such as x and y position, color, size, shape, and transparency. You map variables in the dataset to these aesthetics, creating a relationship between the data and the plot elements.
+
+3.  **Geoms**: Geoms (short for geometric objects) are the actual plot elements, such as points, lines, and bars. Different geoms represent different types of plots, like scatter plots, line plots, or bar plots. You can add multiple geoms to a single plot to create complex visualizations.
+
+4.  **Scales**: Scales control how data values are mapped to aesthetic properties. They define the transformation and mapping of data values to visual properties, such as colors, sizes, or shapes. You can adjust scales to customize the appearance of the plot.
+
+5.  **Themes**: Themes control the non-data aspects of the plot, such as the background, gridlines, axis labels, and legend. You can customize the plot's appearance by changing its theme.
+
+In the ggplot2 modular paradigm, you start by specifying the data and the aesthetics, then add geoms, scales, and themes as needed. This layer-by-layer approach allows you to create a wide range of plots by combining and customizing these components.
+
+Here's an example that demonstrates the modular paradigm:
+
+```{r}
+# Define data and aesthetics
+plot <- ggplot(data = mtcars, aes(x = wt, y = mpg, color = hp))
+plot
+
+# Add geom
+plot <- plot + geom_point()
+plot
+
+# Adjust scale
+plot <- plot + scale_color_continuous(low = "blue", high = "red")
+plot
+
+# Apply theme
+plot <- plot + theme_minimal()
+
+# Display the final plot
+plot
+```
+
+In this example, we first define the data and aesthetics, then add a point geom, adjust the color scale, and finally apply a minimal theme. The result is a scatter plot that shows the relationship between car weight and miles per gallon, with points colored according to horsepower.
+
+## Aesthetics in ggplot2
+
+Aesthetics are the visual properties of the elements in a plot. They help convey the underlying patterns and relationships in the data. In ggplot2, you map variables from your dataset to aesthetics to create a relationship between the data and the plot elements. Common aesthetics include `x` and `y` position, `color`, `size`, `shape`, `group`, and `transparency`.
+
+### Mapping Aesthetics
+
+Let's create a scatter plot with the `year` variable mapped to the x-axis, the `revenue` variable mapped to the y-axis, and the `bechdel_result` variable mapped to the color and shape aesthetics:
+
+```{r}
+# btd <- read_tsv('bechdel_test - bechdel_test.tsv')
+# Create a scatter plot with aesthetics mapped to variables
+scatter_plot <- ggplot(btd, aes(x = year, y = rating, color = factor(genre))) +
+  geom_point()
+
+scatter_plot
+```
+
+### Modifying Aesthetic Properties and Overwriting in Geoms
+
+You can modify aesthetic properties directly within a geom. This allows you to make specific adjustments to the appearance of individual plot elements. Let's create a scatter plot with larger points and a custom transparency:
+
+```{r}
+# Modify the size and transparency of points within the geom
+scatter_plot_independent_aes <- ggplot(btd, aes(x = year, y = rating)) +
+  geom_point(size = 3, alpha = 0.3, color='gold')
+
+scatter_plot_independent_aes
+
+scatter_plot_data_related_aes <- ggplot(btd, aes(x = year, y = rating)) +
+  geom_point(size = 3, alpha = 0.3, aes(color = factor(genre)))
+
+scatter_plot_data_related_aes
+
+```
+
+In this example, we have increased the size of the points and made them semi-transparent by setting the `size` and `alpha` arguments within the `geom_point()` function, respectively. By modifying aesthetics directly within a geom, you can overwrite the initial mappings created by the `aes()` function and gain more control over the appearance of your plot elements.
+
+## Exploring Different Geom Selections
+
+In this section, we will demonstrate various geom selections using simple dummy data. Each geom represents a specific type of plot, and their applicability depends on the type of data (numeric vs. categorical) and the relationship you want to visualize.
+
+### Scatterplot (geom_point)
+
+A scatterplot displays the relationship between two numeric variables by plotting points at their respective x and y coordinates. It's useful for visualizing trends, patterns, or outliers in the data.
+
+```{r}
+# Use the mtcars dataset as an example
+head(mtcars)
+
+# Create a scatterplot of mpg (miles per gallon) vs. wt (weight)
+scatter_plot <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+
+scatter_plot
+```
+
+### Line Plot (geom_line)
+
+A line plot connects data points with lines to visualize the relationship between two numeric variables. It's useful for showing trends over time or any continuous variable.
+
+```{r}
+# Use the pressure dataset as an example
+head(pressure)
+
+# Create a line plot of temperature vs. pressure
+line_plot <- ggplot(pressure, aes(x = temperature, y = pressure)) +
+  geom_line()
+
+line_plot
+```
+
+### Bar Plot (geom_bar) and Column Plot (geom_col)
+
+A bar plot displays the frequency or count of categorical data, while a column plot displays the value of a numeric variable for each category. Both are useful for visualizing relationships between categorical and numeric variables.
+
+```{r}
+# Use the diamonds dataset as an example
+head(diamonds)
+
+# Create a bar plot of diamond counts by cut
+bar_plot <- ggplot(diamonds, aes(x = cut)) +
+  geom_bar()
+
+bar_plot
+
+# Create a column plot of average price by cut
+column_plot <- ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_col()
+
+column_plot
+```
+
+### Histogram (geom_histogram)
+
+A histogram groups numeric data into bins and displays the frequency of observations in each bin. It's useful for visualizing the distribution of a numeric variable.
+
+```{r}
+# Create a histogram of the mpg variable from the mtcars dataset
+histogram_plot <- ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 2)
+
+histogram_plot
+```
+
+### Box Plot (geom_boxplot)
+
+A box plot displays the distribution of a numeric variable across different categories. It's useful for comparing distributions and identifying outliers within categorical groups.
+
+```{r}
+# Create a box plot of price by cut for the diamonds dataset
+box_plot <- ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_boxplot()
+
+box_plot
+```
+
+These are just a few examples of the many `geoms` available in ggplot2. By selecting the appropriate geom for your data, you can create informative and visually appealing plots that effectively communicate the relationships within your dataset.
+
+## Position Adjustments and Adding Multiple Layers
+
+### Jittering Points (position = "jitter")
+
+In scatter plots, data points can sometimes overlap, making it difficult to discern individual observations. To address this issue, you can apply a position adjustment, such as `jitter`, which slightly moves the points in a random direction to reduce overlap.
+
+```{r}
+# Create a scatter plot of the diamonds dataset with jittered points
+jittered_plot <- ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_point(position = "jitter", alpha = 0.5) +
+  theme_minimal()
+
+jittered_plot
+```
+
+In this example, the points are `jittered` to reduce overlap, making it easier to see the distribution of observations within each `cut` category.
+
+### Adding Multiple Layers (Geoms)
+
+You can add multiple `geoms` to a single plot to create more complex visualizations. For example, you can combine a scatter plot with a smoothed line to show the overall trend, and add text labels to annotate specific data points.
+
+```{r}
+# Use the mtcars dataset as an example
+head(mtcars)
+
+# Create a scatter plot of mpg (miles per gallon) vs. wt (weight) with a smoothed line
+scatter_plot_smooth <- ggplot(mtcars, aes(x = wt, y = mpg, label = rownames(mtcars))) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, linetype = "dashed", color = "blue") +
+  theme_minimal()
+
+scatter_plot_smooth
+
+# Annotate specific data points with text labels
+scatter_plot_annotate <- scatter_plot_smooth +
+  geom_text(data = subset(mtcars, mpg > 30 | wt > 5), 
+            size = 3, hjust = 0.25, vjust = 1.5, 
+            mapping = aes(label=rownames(subset(mtcars, mpg > 30 | wt > 5)))) +
+  annotate(geom = 'text', x = 5, y = 30, label="Text that I can add here", color="blue")
+
+scatter_plot_annotate
+```
+
+In this example, we first created a scatter plot of `mpg` vs. `wt` and added a smoothed line using `geom_smooth`. Then, we annotated specific data points with text labels using `geom_text`. By combining multiple `geoms`, you can create more informative and visually appealing plots.
+
+### Task:
+
+Use the cell below to repeat the steps we have done so far. Generate a plot where you show `diamonds` data by `cut` and `price`. Use `geom_violin`, what does it show and how to interpret it? Add `geom_point` to there as well, make it very light (transparent), use position `jitter`. Find more options from [data-wrangling-cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+```{r}
+
+```
+
+## Scaling Numeric and Discrete Variables
+
+Scaling variables allows you to transform their range, making it easier to visualize data that spans multiple orders of magnitude or to compare multiple variables with different units.
+
+### Scaling Numeric Variables
+
+For numeric variables, you can use `scale_x_continuous()` and `scale_y_continuous()` to adjust the scales of the x and y axes. Let's create a scatter plot of `intcross` vs. `rating` and scale the axes using log transformations:
+
+```{r}
+# Create a scatter plot of intcross vs. rating with log-scaled axes
+scatter_plot_scaled <- ggplot(btd, aes(x = rating, y = intgross)) +
+  geom_point() +
+  scale_y_continuous(trans = "log10")
+
+scatter_plot_scaled
+```
+
+In this example, we used log transformations to scale the `intcross` variable. This can help reveal patterns in the data that might not be apparent when using the original scales.
+
+### Scaling Discrete Variables
+
+For discrete variables, you can use `scale_x_discrete()` and `scale_y_discrete()` to modify the order or appearance of the categories. Let's create a box plot of `genre` vs. `rating` and reorder the genres by median `rating`:
+
+```{r}
+# Calculate the median rating for each genre
+genre_median <- btd %>%
+  group_by(genre) %>%
+  summarize(median_rating = median(rating, na.rm = TRUE)) %>%
+  arrange(median_rating) %>% 
+  filter(!is.na(genre)) %>%
+  filter(!genre%in%c('Family', 'Musical', 'Romance', 'Thriller'))
+
+# Create a box plot of genre vs. rating with reordered categories
+box_plot_scaled <- ggplot(btd, aes(x = genre, y = rating)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = genre_median$genre) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+box_plot_scaled
+```
+
+In this example, we reordered the `genre` categories based on the median `rating`. This can help highlight differences in the distribution of `rating` across genres and make it easier to compare them.
+
+Scaling variables can enhance the readability of your plots and reveal hidden patterns in your data. By applying appropriate transformations to numeric and discrete variables, you can create more effective visualizations.
+
+## Color Scaling
+
+Color scaling can be used to visualize an additional variable in a plot, adding an extra dimension of information. In this example, we will create a scatter plot of `budget` vs. `intgross`, with the color of the points representing the `rating`.
+
+```{r}
+# Create a scatter plot of budget vs. intgross with color-scaled ratings
+scatter_plot_color <- ggplot(btd, aes(x = budget, y = intgross, color = rating)) +
+  geom_point(alpha = 0.4) +
+  scale_x_continuous(labels = scales::comma, trans = "log10") +
+  scale_y_continuous(labels = scales::comma, trans = "log10") +
+  scale_color_continuous(low = "blue", high = "red") +
+  theme_minimal()
+
+scatter_plot_color
+```
+
+In this example, we used `scale_color_continuous()` to adjust the color scale based on the `rating` variable. The points are colored from blue (low rating) to red (high rating), providing an extra layer of information on top of the relationship between `budget` and `intgross`.
+
+By applying color scaling, you can create richer visualizations that display more information and enhance the understanding of your data.
+
+## Refactoring and Reordering Factorial Data
+
+Factor variables are categorical variables that can take a limited number of distinct values. In ggplot2, you can refactor and reorder factor variables to enhance your visualizations.
+
+### Refactoring
+
+Refactoring involves changing the levels of a factor variable. You can use the `forcats` package (part of the tidyverse) to refactor variables. The `fct_recode()` function can be used to recode the levels of a factor.
+
+```{r}
+# Load the required packages
+# library(forcats)
+
+# Create a new column with a refactored clean_test variable
+btd_refactored <- btd %>%
+  mutate(clean_test_refactored = fct_recode(clean_test,
+                                            "pass" = "ok",
+                                            "fail" = "nowomen",
+                                            "fail" = "notalk",
+                                            "fail" = "men",
+                                            "N/A" = "dubious"))
+
+head(btd_refactored)
+```
+
+In this example, we refactored the `clean_test` variable by changing the levels from "yes" and "no" to "pass" and "fail".
+
+### Reordering
+
+Reordering involves changing the order of the levels of a factor variable. You can use the `fct_reorder()` function to reorder the levels of a factor based on the values of another variable.
+
+```{r}
+# Create a new column with reordered genre based on the median intgross
+btd_reordered <- btd_refactored %>%
+  mutate(genre_reordered = fct_reorder(genre, intgross, .fun = median, .desc = TRUE)) %>% 
+  filter(!(is.na(genre) | genre%in%c('Family', 'Musical', 'Romance', 'Thriller')))
+
+head(btd_reordered)
+```
+
+In this example, we reordered the levels of the `genre` variable based on the median value of `intgross` for each genre. This can be useful for creating plots where the categories are ordered meaningfully.
+
+Now let's create a bar plot of the reordered genres with the refactored clean_test variable:
+
+```{r}
+# Create a bar plot of the refactored clean_test and reordered genre variables
+bar_plot_reordered <- ggplot(btd_reordered, aes(x = genre_reordered, fill = clean_test_refactored)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Genre (reordered)", fill = "Clean Test (refactored)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+bar_plot_reordered
+```
+
+In this plot, we used the refactored `clean_test` variable and the reordered `genre` variable to create a more informative visualization. By refactoring and reordering factor variables, you can enhance the readability and effectiveness of your plots.
+
+## Enhancing Plots with Titles, Axis Labels, Limits, and Themes
+
+Adding titles, axis labels, limits, and customizing the theme can make your plots more informative and visually appealing. In this section, we will demonstrate how to enhance a plot using these features.
+
+Let's create a scatter plot of `budget` vs. `intgross` and use the `rating` column for color scaling:
+
+```{r}
+scatter_plot_example <- ggplot(btd, aes(x = budget, y = intgross, color = rating)) +
+  geom_point(alpha = 0.7) +
+  scale_x_continuous(labels = scales::comma, trans = "log10") +
+  scale_y_continuous(labels = scales::comma, trans = "log10") +
+  scale_color_continuous(low = "blue", high = "red") +
+  theme_minimal()
+
+scatter_plot_example
+```
+
+### Adding Title and Axis Labels
+
+You can add a main title, subtitle, and axis labels using the `labs()` function:
+
+```{r}
+scatter_plot_labeled <- scatter_plot_example +
+  labs(
+    title = "Budget vs. International Gross",
+    subtitle = "Colored by Rating",
+    x = "Budget (log scale)",
+    y = "International Gross (log scale)",
+    color = "Rating"
+  )
+
+scatter_plot_labeled
+```
+
+### Setting Axis Limits
+
+To set the limits for the x and y axes, you can use the `xlim()` and `ylim()` functions:
+
+```{r}
+scatter_plot_limited <- scatter_plot_labeled +
+  xlim(100000000, 3e+8) +
+  ylim(100000000, 3e+8) + 
+  geom_point(mapping = aes(size = rating), alpha=0.4)
+
+scatter_plot_limited
+```
+
+### Customizing the Theme
+
+You can customize the appearance of your plot by modifying the theme. The `theme()` function allows you to change various aspects of the plot, such as text size, font, background colors, and grid lines:
+
+```{r}
+scatter_plot_custom_theme <- scatter_plot_limited +
+  theme(
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size = 14),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10),
+    panel.background = element_rect(fill = "white"),
+    panel.grid.major = element_line(color = "gray", linetype = "dashed", size = 0.5),
+    panel.grid.minor = element_line(color = "gray", linetype = "dotted", size = 0.25)
+  )
+
+scatter_plot_custom_theme
+```
+
+By adding titles, axis labels, limits, and customizing the theme, you can create more informative and visually appealing plots that effectively communicate your data's story. See [cheatsheet](https://www.maths.usyd.edu.au/u/UG/SM/STAT3022/r/current/Misc/data-visualization-2.1.pdf) for additional themes.
+
+## Exporting and Saving Plots with ggsave
+
+`ggsave()` is a convenient function for saving your ggplot2 plots in various file formats, such as PNG, PDF, SVG, or TIFF. Using `ggsave()`, you can easily save high-quality versions of your plots for use in reports, presentations, or publications.
+
+Let's create a scatter plot of `budget` vs. `intgross` with the `rating` column for color scaling:
+
+```{r}
+scatter_plot_example <- ggplot(btd, aes(x = budget, y = intgross, color = rating)) +
+  geom_point(alpha = 0.7) +
+  scale_x_continuous(labels = scales::comma, trans = "log10") +
+  scale_y_continuous(labels = scales::comma, trans = "log10") +
+  scale_color_continuous(low = "blue", high = "red") +
+  labs(
+    title = "Budget vs. International Gross",
+    subtitle = "Colored by Rating",
+    x = "Budget (log scale)",
+    y = "International Gross (log scale)",
+    color = "Rating"
+  ) +
+  theme_minimal()
+
+scatter_plot_example
+```
+
+To save this plot as a high-quality PNG image, you can use the `ggsave()` function:
+
+```{r}
+# Save the plot as a PNG file
+ggsave(
+  filename = "scatter_plot_example.png",
+  plot = scatter_plot_example,
+  width = 8,
+  height = 5,
+  dpi = 300
+)
+```
+
+In this example, we saved the `scatter_plot_example` plot as a PNG file with a width of 8 inches, a height of 5 inches, and a resolution of 300 dots per inch (DPI). You can adjust the `width`, `height`, and `dpi` parameters to control the size and quality of the saved image. Here `plot =` argument may be optional -- if plot is not assigned it will by default take the last active plot.
+
+To save the plot in a different file format, you can change the file extension in the `filename` parameter. For example, to save the plot as a PDF, you can use:
+
+```{r}
+# Save the plot as a PDF file
+ggsave(
+  filename = "scatter_plot_example.pdf",
+  plot = scatter_plot_example,
+  width = 8,
+  height = 5
+)
+```
+
+By using `ggsave()`, you can easily export and save your ggplot2 plots in a variety of file formats to share or include in your documents.
+
+## Combining Multiple Plots with patchwork
+
+The `patchwork` package allows you to easily combine multiple ggplot2 plots into a single layout. This can be useful for comparing different visualizations side by side or creating more complex visualizations.
+
+First, let's create some example plots using the `mtcars` dataset:
+
+```{r}
+# Load the required packages
+library(ggplot2)
+library(patchwork)
+
+# Create a scatter plot of mpg vs. wt
+scatter_plot <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(color = cyl)) +
+  labs(title = "Miles per Gallon vs. Weight", x = "Weight (1000 lbs)", y = "Miles per Gallon", color = "Cylinders") +
+  theme_minimal() + 
+  theme(title = element_text(size = 12, face = "bold"), plot.subtitle = element_text(size = 10))
+
+# Create a bar plot of the number of cars per number of cylinders
+bar_plot <- ggplot(mtcars, aes(x = factor(cyl))) +
+  geom_bar(aes(fill = factor(cyl))) +
+  labs(title = "Number of Cars per Number of Cylinders", x = "Number of Cylinders", y = "Count", fill = "Cylinders") +
+  theme_minimal() + 
+  theme(plot.title = element_text(size = 8, face = "bold"), legend.position="none")
+
+# Create a box plot of mpg per number of cylinders
+box_plot <- ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot(aes(fill = factor(cyl))) +
+  labs(title = "Miles per Gallon per Number of Cylinders", x = "Number of Cylinders", y = "Miles per Gallon", fill = "Cylinders") +
+  theme_minimal() + 
+  theme(plot.title = element_text(size = 8, face = "bold"))
+```
+
+Now, let's use the `patchwork` package to combine these plots:
+
+```{r}
+# Combine the plots using patchwork
+combined_plot <- scatter_plot + bar_plot + box_plot + plot_layout(ncol = 1)
+combined_plot
+```
+
+In this example, we combined the three plots into a single column layout. You can adjust the layout by changing the `ncol` and `nrow` parameters in the `plot_layout()` function.
+
+To collect the legends and add a global title, subtitle, and caption, you can use the `plot_annotation()` function:
+
+```{r}
+# Collect legends and add global title, subtitle, and caption
+combined_plot_annotated <- scatter_plot / (bar_plot + box_plot) +
+  plot_annotation(
+    title = "Exploring the mtcars Dataset",
+    subtitle = "Scatter plot, bar plot, and box plot",
+    caption = "Data source: mtcars",
+    theme = theme(plot.title = element_text(size = 13, face = "bold"), plot.subtitle = element_text(size = 11)),
+    tag_levels = 'A'
+  ) +
+  plot_layout(guides = "collect")
+
+combined_plot_annotated
+```
+
+By using the `patchwork` package, you can combine multiple ggplot2 plots into a single layout, making it easier to compare and present your visualizations.
+
+### Task:
+
+Now it's your time to shine. Let you imagination fly and explore the bechdel test dataset. Come up with your own visualisation. Use as many plots, as many colours and themes as you see fit. Start building it gradually, this makes finding and identifying errors easier. You can even take your own data and explore it. But try to get to a publishing ready image (*sans* figure legend).
+
+Find more options from [data-wrangling-cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf).
+
+```{r}
+
+```
