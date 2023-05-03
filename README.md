@@ -1,3 +1,11 @@
+# Elixir Estonia workshop on visualisation with ggplot 2 2023-05-02
+
+The idea was to use this template for the workshop, but decided against that and used Rstudio with Rmd instead as it is more interactive.
+Currently the html (knitted) version of document was distributed to the trainees as well, but it might be worth while to add the knitted version
+here instead.
+
+Make the Rmd file aviable for download, add install instructions (requirements) for R, Rstudio, tidyverse (and ggplot) packages. That should be everything that is needed to follow the workshop.
+
 # Elixir Training Lesson template
 
 For instruction on how to use the template, please follow this documentation: 
